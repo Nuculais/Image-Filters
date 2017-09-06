@@ -1,17 +1,16 @@
 
-var canvas; // the canvas
-var context; // an object that's part of the canvas and contains function used to draw on the canvas
+var canvas;
+var context; 
+var originalImage; // Variable to save the original image in (so you can revert to the original)
 
-var originalImage; // variable to save the original image in (so you can revert to the original)
-
-var filterHistory;  // stores the users history of filter uses
+var filterHistory;  // Stores the users history of filter uses
 
 // When the page have finished loading
 $( document ).ready(function(){
 
 	// Sets the "global" variables values
 	
-	canvas = $("#workCanvas").get(0); // .get(0) is used to get the actual canvas element and not a jquery element, getContext wont work otherwise
+	canvas = $("#workCanvas").get(0);
 	context = canvas.getContext("2d");
 	
 	// Sets a test image as the image to change, also draws it on the canvas
@@ -51,7 +50,6 @@ $( document ).ready(function(){
 });
 	
 	$("#customSpatialConvolutionButton").click(function() {
-		// seems oddly slow for some reason
 		var pixelWeightMatrix = [[1, 1, 1], 
 								[1, 1, 1], 
 								[1, 1, 1]];
@@ -116,10 +114,10 @@ function addToHistory(imageData){
 
 // invert filter function
 function invert(){
-	var imageData = context.getImageData(0,0,canvas.width,canvas.height); // copies image data from canvas, see http://www.w3schools.com/tags/canvas_getimagedata.asp for some more info
+	var imageData = context.getImageData(0,0,canvas.width,canvas.height);
 	var pixelData = imageData.data;// the actual pixel values
 
-	// the color inverting
+	// the color inversion
 	for (i = 0; i < pixelData.length; i+=4) { 
 		pixelData[i]     = 255 - pixelData[i];     // red
 		pixelData[i + 1] = 255 - pixelData[i + 1]; // green
@@ -130,9 +128,9 @@ function invert(){
 	addToHistory(imageData);
 }
 
-//Svartvitt filter
+//Black&White filter
 function Svartvit() {
-	//canvas, context och originalImage = redan existerande variabler
+	//canvas, context and originalImage = already existing variables
 	
 	var imagedata = context.getImageData(0,0,canvas.width,canvas.height);
 	var pix = imagedata.data;
@@ -146,8 +144,8 @@ function Svartvit() {
 	pix[i] = sv;   //r
 	pix[i+1] = sv; //g
 	pix[i+2] = sv; //b
-	pix[i+3] = 255; //a (alfakanalen)
-	//sv = genomsnittet av r, g och bs värde, svartvit = alla färgkanaler har samma värde.
+	pix[i+3] = 255; //a (alpha channel)
+	//sv = average of r's, g's och b's value, svartvit = all colour channels have the same value
 			}
 		}
 		context.putImageData(imgagedata, 0, 0);
@@ -156,8 +154,6 @@ function Svartvit() {
 
 
 
-// Used for sharpen, blur etc, see lecture 3
-// scale is used so you can have a matrix with a sum above 1 and still ake it work (like in blur)
 function spatialConvolution(pixelWeightMatrix, scale){ // pixelWeightMatrix needs to be a jagged int array with a size of 3x3, 5x5, 7x7 ... 
 	var borderSizeInPix = ((pixelWeightMatrix.length-1)/2);// how many pixels on the border to ignore
 	var borderSize = borderSizeInPix*4; // bordersize in pixeldata size
@@ -168,7 +164,7 @@ function spatialConvolution(pixelWeightMatrix, scale){ // pixelWeightMatrix need
 	var pixelData = imageData.data;
 	var outputPixelData = outputImageData.data;
 
-	// loop through all pixels (ignores border pixel because i'm lazy)
+	// loops through all pixels
 	for (y = borderSize; y < imageData.height*4 - borderSize; y += 4) { 
 		for (x = borderSize; x < imageData.width*4 - borderSize; x += 4) { 
 			var i = x + (y * imageData.width);// from two dimensional to one dimensional
@@ -177,7 +173,7 @@ function spatialConvolution(pixelWeightMatrix, scale){ // pixelWeightMatrix need
 			var bSum = 0;
 			var aSum = 0;
 			
-			// loop through all pixelWeightMatrix values
+			// loops through all pixelWeightMatrix values
 			for(var yPG = 0; yPG < pixelWeightMatrix.length; yPG++){
 				for(var xPG = 0; xPG < pixelWeightMatrix[yPG].length; xPG++){
 					// the offset from the middle pixel
@@ -202,11 +198,11 @@ function spatialConvolution(pixelWeightMatrix, scale){ // pixelWeightMatrix need
 	addToHistory(outputImageData);
 }
 
-// Sets the selected image from imagePath as the one we want to use filters on. !!NOTE!!: might cause problems after the first use but it didnt when I tried
+// Sets the selected image from imagePath as the one we want to use filters on.
 function setImage(imagePath){
 	originalImage = new Image();
 	originalImage.onload = function() {
-		// Sets the canvas size to that of the image (so we don't get unused pixels or not enough pixels)
+		// Sets the canvas size to that of the image
 		resetToOriginal();
     };
 	
@@ -240,7 +236,7 @@ function animateFilterTransistion(newImageData, totalTime, fps){
 
 function animateFilterTransistionDrawPart(newImageData, widthToDraw){
 	context.putImageData(newImageData, 
-						0, 0, // works with these values for some reason. I expected (animateFilterTransistionDrawPartCurrentPos, 0) to be the ones to work
+						0, 0, 
 						animateFilterTransistionDrawPartCurrentPos, 0, 
 						widthToDraw, newImageData.height);					
 					
