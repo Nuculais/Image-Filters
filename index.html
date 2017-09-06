@@ -1,0 +1,59 @@
+<!doctype html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<title>Filters</title>
+
+		<link rel="stylesheet" href="css/styles.css">
+		<script type="text/javascript" src="js/jquery-1.12.0.min.js"></script>
+		<script type="text/javascript" src="js/scripts.js"></script>	
+	</head>
+
+	<body>
+		<div id="content">
+			<div id="canvasContainer">
+				<canvas id="workCanvas"></canvas><!-- Canvas size is based on the image size -->
+			</div>			
+			<button type="button" id="invert">Invert</button>
+			<button type="button" id="svartvit">Svartvit</button>
+			<button type="button" id="sharpen">Sharpen</button>
+			<button type="button" id="blur">Blur</button>
+			<button type="button" id="darken">darken</button>
+			<button type="button" id="brighten">brighten</button>
+			
+			<button type="button" id="reset">Reset</button>
+			<button type="button" id="undo" disabled>Undo</button>
+			<button type="button" id="redo" disabled>Redo</button>
+			<input type="file" id="selectImageFromPC" accept="image/x-png, image/gif, image/jpeg">
+			
+			<!-- Not allowed due to security reasons (cross-origin)
+			<input type="text" id="URLForSelectImageFromURL">
+			<button type="button" id="selectImageFromURL">Select</button>
+			-->
+			
+			<table>
+				<tr>
+					<td><input type="text" class="customSpatialConvolution" id="00"></td>
+					<td><input type="text" class="customSpatialConvolution" id="10"></td> 
+					<td><input type="text" class="customSpatialConvolution" id="20"></td>
+				</tr>
+				<tr>
+					<td><input type="text" class="customSpatialConvolution" id="01"></td>
+					<td><input type="text" class="customSpatialConvolution" id="11"></td> 
+					<td><input type="text" class="customSpatialConvolution" id="21"></td>
+				</tr>
+				<tr>
+					<td><input type="text" class="customSpatialConvolution" id="02"></td>
+					<td><input type="text" class="customSpatialConvolution" id="12"></td> 
+					<td><input type="text" class="customSpatialConvolution" id="22"></td>
+				</tr>
+				<tr>
+					<td><input type="text" class="customSpatialConvolution" id="scale" value="scale"></td>
+					<td><button type="button" id="customSpatialConvolutionButton">Go</button></td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>
